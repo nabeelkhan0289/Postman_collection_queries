@@ -1,0 +1,696 @@
+{
+	"info": {
+		"_postman_id": "d93bf993-6866-4b98-a1fa-0184b83be356",
+		"name": "Create Booking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22138184"
+	},
+	"item": [
+		{
+			"name": "User successfully creates booking with all details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking created successfully', function (){",
+							"pm.response.to.have.status(200);",
+							"})",
+							"pm.test('Verify successfully created booking response', function (){",
+							"//pm.expect(responseData)",
+							"    pm.expect(r.booking.firstname).to.be.a('string');",
+							"    pm.expect(r.booking.lastname).to.be.a('string');",
+							"    pm.expect(r.booking.totalprice).to.be.a('number');",
+							"    pm.expect(r.booking.depositpaid).to.be.a('boolean');   ",
+							"    let moment = require ('moment');",
+							"    pm.expect(r.booking.bookingdates.checkin).to.be.a('string');",
+							"    let checkin = r.booking.bookingdates.checkin;",
+							"    pm.expect(checkin).to.include(moment(checkin).format('YYYY-MM-DD'));",
+							"",
+							"    pm.expect(r.booking.bookingdates.checkout).to.be.a('string');",
+							"    let checkout = r.booking.bookingdates.checkout;",
+							"    pm.expect(checkout).to.include(moment(checkout).format('YYYY-MM-DD'));",
+							"",
+							"    pm.expect(r.booking.additionalneeds).to.be.a('string');",
+							"",
+							"    pm.expect(r.bookingid).to.greaterThan(0);",
+							"    pm.expect(r.booking.firstname).to.eq('Jim');",
+							"    pm.expect(r.booking.lastname).to.eq('Brown');",
+							"    pm.expect(r.booking.totalprice).to.eq(111);",
+							"    pm.expect(r.booking.depositpaid).to.eq(true);",
+							"    pm.expect(r.booking.bookingdates.checkin).to.eq(\"2023-01-01\");",
+							"    pm.expect(r.booking.bookingdates.checkout).to.eq(\"2023-02-03\");",
+							"})",
+							"",
+							"pm.test(\"verify checkin date should be lesst then checkout date\", function () {",
+							"    let todayDate = Date.now();",
+							"    let checkin = r.booking.bookingdates.checkin;",
+							"    let checkout = r.booking.bookingdates.checkout;",
+							"    pm.expect(Date.parse(checkin)).to.be.above(todayDate);",
+							"    pm.expect(Date.parse(checkout)).to.be.above(Date.parse(checkin));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2023-01-01\",\n        \"checkout\" : \"2023-02-03\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User can not create booking with negative total price",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking created successfully', function (){",
+							"pm.response.to.have.status(400);",
+							"",
+							"",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : -1,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User can not create booking with empty value as total price",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking can not be created with empty total price', function (){",
+							"pm.response.to.have.status(400);",
+							"",
+							"",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : \"\",\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User successfully creates booking when empty dates are provided which by default select today's date",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking created successfully', function (){",
+							"pm.response.to.have.status(200);",
+							"",
+							"",
+							"})",
+							"",
+							"pm.test('booking should have booking ID', function (){",
+							"//pm.expect(responseData)",
+							"pm.expect(r.bookingid).to.greaterThan(0);",
+							"pm.expect(r.booking.firstname).to.eq('Jim');",
+							"pm.expect(r.booking.lastname).to.eq('Brown');",
+							"pm.expect(r.booking.totalprice).to.eq(111);",
+							"pm.expect(r.booking.depositpaid).to.eq(true);",
+							"pm.expect(r.booking.bookingdates.checkin).to.eq(\"2018-01-01\");",
+							"pm.expect(r.booking.bookingdates.checkout).to.eq(\"2019-01-01\");",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User can not create booking with null dates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking can not be created with null dates', function (){",
+							"pm.response.to.have.status(400);",
+							"",
+							"",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : null,\n        \"checkout\" : null\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User can not create booking without first name and last name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('user can not create booking without names', function (){",
+							"pm.response.to.have.status(200);",
+							"",
+							"",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User successfully creates booking without additional needs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking created successfully', function (){",
+							"pm.response.to.have.status(200);",
+							"",
+							"",
+							"})",
+							"",
+							"pm.test('booking should have booking ID', function (){",
+							"//pm.expect(responseData)",
+							"pm.expect(r.booking.firstname).to.eq('Jim');",
+							"pm.expect(r.booking.lastname).to.eq('Brown');",
+							"pm.expect(r.booking.totalprice).to.eq('111');",
+							"pm.expect(r.booking.depositpaid).to.eq('true');",
+							"pm.expect(r.booking.bookingdates.checkin).to.eq(2018-01-01);",
+							"pm.expect(r.booking.bookingdates.checkout).to.eq(2019-01-01);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    }\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User can not creates booking without dates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const r = pm.response.json();",
+							"",
+							"pm.test('booking can not be created', function (){",
+							"pm.response.to.have.status(500);",
+							"",
+							"",
+							"})",
+							"",
+							"pm.test('booking should have dates', function (){",
+							"//pm.expect(responseData)",
+							"console.log(pm.response.text())",
+							"pm.response.have(\"An error occured\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"Jim\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"additionalneeds\" : \"Breakfast\"\n}"
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
